@@ -9,6 +9,11 @@ $ npm i
 $ npm start
 ```
 
+
+![appImage](https://github.com/Cosmo2357/CapstoneReactApp/assets/37522195/9a8404eb-fbe7-4686-8a51-7dc3684f1f87)
+![wireframe2](https://github.com/Cosmo2357/CapstoneReactApp/assets/37522195/6da68bf9-94b3-4982-8062-c160f53c82d4)
+![homescreen](https://github.com/Cosmo2357/CapstoneReactApp/assets/37522195/9accba65-9d26-4c50-86e2-72fcb73f785b)
+
 ## Greading Criteria
 - Is there a wireframe design upon which the actual screens in your mobile app are based?  
 ✅` please check the wireframe folder`
