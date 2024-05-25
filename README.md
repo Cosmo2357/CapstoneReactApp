@@ -35,7 +35,7 @@ $ npm start
 
 - Does clicking the Log out button clear all data from the Profile screen?  
 ✅
-🚨`Please check by Remove buttton since Logout button will make you logout and you can not see the user information was really removed. I removed firstname lastname anc checkbox data instead so that you can check if it was removed from both state and device's store.`
+🚨`"Please check using the 'Remove' button, as the 'Logout' button will log you out and you won't be able to verify if the user information was actually removed. I removed the first name, last name, and checkbox data instead, so you can verify if it was removed from the store."`
 
 - Does the app feature stack navigation that allows you to access the previous screen using the Back button?  
 ✅
