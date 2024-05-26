@@ -11,9 +11,10 @@ $ npm start
 
 ![Slice 2](https://github.com/Cosmo2357/CapstoneReactApp/assets/37522195/0462278b-3642-44e9-a4a9-99306ff44059)
 
-![newwire](https://github.com/Cosmo2357/CapstoneReactApp/assets/37522195/57d9281d-c512-448d-ae2f-a3e9879c7f41)
+![newwireframe](https://github.com/Cosmo2357/CapstoneReactApp/assets/37522195/1fd6eee3-d75b-444b-9906-2bd98052fa2f)
 
-![スクリーンショット 2024-05-26 14 20 37](https://github.com/Cosmo2357/CapstoneReactApp/assets/37522195/64bb4d62-c68e-4977-b9db-5f3f13975494)
+![wiresize](https://github.com/Cosmo2357/CapstoneReactApp/assets/37522195/d6d79a15-e56f-44b6-814f-2ac7f1eccf6a)
+
 
 
 ## Greading Criteria
