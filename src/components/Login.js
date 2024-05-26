@@ -72,7 +72,7 @@ export default function Login() {
               disabled={loading}
             >
               {loading ? 
-              <ActivityIndicator color='black' size="large" /> : 
+              <ActivityIndicator color='black'  /> : 
               <Text style={styles.buttonText}>NEXT</Text>}
             </Pressable>
           </View>

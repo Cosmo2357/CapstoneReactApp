@@ -245,7 +245,7 @@ const styles = StyleSheet.create({
   container: {
     flex: 1,
     justifyContent: 'flex-start',
-    padding: 8,
+    padding: 16,
     width: '100%',
     backgroundColor: '#fff',
   },
