@@ -9,14 +9,16 @@ $ npm i
 $ npm start
 ```
 
+![Slice 2](https://github.com/Cosmo2357/CapstoneReactApp/assets/37522195/0462278b-3642-44e9-a4a9-99306ff44059)
 
-![appImage](https://github.com/Cosmo2357/CapstoneReactApp/assets/37522195/9a8404eb-fbe7-4686-8a51-7dc3684f1f87)
-![wireframe2](https://github.com/Cosmo2357/CapstoneReactApp/assets/37522195/6da68bf9-94b3-4982-8062-c160f53c82d4)
-![homescreen](https://github.com/Cosmo2357/CapstoneReactApp/assets/37522195/9accba65-9d26-4c50-86e2-72fcb73f785b)
+![newwire](https://github.com/Cosmo2357/CapstoneReactApp/assets/37522195/57d9281d-c512-448d-ae2f-a3e9879c7f41)
+
+![スクリーンショット 2024-05-26 14 20 37](https://github.com/Cosmo2357/CapstoneReactApp/assets/37522195/64bb4d62-c68e-4977-b9db-5f3f13975494)
+
 
 ## Greading Criteria
 - Is there a wireframe design upon which the actual screens in your mobile app are based?  
-✅` please check the wireframe folder`
+✅` please check this read me image or inside wireframe folder`
 
 - Are you greeted with an Onboarding screen when the app is opened for the first time, with a prompt to enter your personal details?  
 ✅
@@ -35,7 +37,6 @@ $ npm start
 
 - Does clicking the Log out button clear all data from the Profile screen?  
 ✅
-🚨`"Please check using the 'Remove' button, as the 'Logout' button will log you out and you won't be able to verify if the user information was actually removed. I removed the first name, last name, and checkbox data instead, so you can verify if it was removed from the store."`
 
 - Does the app feature stack navigation that allows you to access the previous screen using the Back button?  
 ✅
