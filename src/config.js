@@ -10,15 +10,15 @@ export const theme = {
     width: '100%',
   },
   input: {
-    backgroundColor: '#EFEFEF',
-    height: 40,
-    padding: 8,
-    borderRadius: 8,
-    width: '100%',
     display: 'flex',
     justifyContent: 'center',
-    borderWidth: 1,
-    borderColor: '#B1B1B1',
+    width: '100%',
+    backgroundColor: '#FFFFFF',
+    height: 40,
+    borderRadius: 8,
+    paddingHorizontal: 16,
+    borderColor: '#D1D2DA',
+    borderWidth: 1
   },
   title: {
     width: '100%',

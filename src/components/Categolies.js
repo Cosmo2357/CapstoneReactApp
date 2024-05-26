@@ -16,7 +16,7 @@ export default function Categolies() {
           onPress={() => handleSelectedCategory(item)}
         >
           <View style={[styles.pillButton, selectedCategory.includes(item) &&styles.active ]}>
-            <Text style={styles.pillButtonText}>{item}</Text>
+            <Text style={[styles.pillButtonText, selectedCategory.includes(item)&&styles.activeText] }>{item}</Text>
           </View>
         </Pressable>
       ))
@@ -46,7 +46,10 @@ const styles = StyleSheet.create({
     fontWeight: 'bold'
   },
 active: {
-    backgroundColor: '#4FA06E',
+    backgroundColor: '#495E57',
+  },
+  activeText: {
+    color: '#FFFFFF'
   },
 
   primaryBtn: theme.primaryBtn

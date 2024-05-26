@@ -1,173 +1,242 @@
-import Checkbox from 'expo-checkbox';
+import React, { useEffect, useState } from 'react';
 import { StatusBar } from 'expo-status-bar';
-import { Alert, Image, KeyboardAvoidingView, Platform, Pressable, StyleSheet, Text, TextInput, View } from 'react-native';
-import { useStore } from '../src/store';
-
+import { Alert, Image, Keyboard, KeyboardAvoidingView, Platform, Pressable, StyleSheet, Text, TextInput, View } from 'react-native';
+import Checkbox from 'expo-checkbox';
+import Toast from 'react-native-root-toast';
 import { router } from 'expo-router';
-import { useEffect, useState } from 'react';
 import { z } from 'zod';
 import { theme } from '../src/config';
-//const db = SQLite.openDatabaseAsync('databaseName');
+import AsyncStorage from '@react-native-async-storage/async-storage';
+import { useStore } from '../src/store';
+
 export default function Profile() {
   const {
     email,
-    username,
+    firstName,
+    lastName,
+    phone,
     saveUserData,
-    userInfo,
-    isLoggedIn,
-    user,
-    setIntialState,
+    orderStatuses,
+    passwordChange,
+    specialOffers,
+    newsLetter,
     removeUserData
-  } = useStore()
+  } = useStore();
 
+  const [inputEmail, setEmail] = useState('');
+  const [inputFirstName, setFirstName] = useState('');
+  const [inputLastName, setLastName] = useState('');
+  const [inputPhone, setPhone] = useState('');
 
-  const [firstName, setFirstName] = useState('')
-  const [lastName, setLastName] = useState('')
-  const [phone, setPhone] = useState('')
+  const [inputOrderStatusesValue, setOrderStatusesValue] = useState(false);
+  const [inputPasswordChangeValue, setPasswordChangeValue] = useState(false);
+  const [inputSpecialOffersValue, setSpecialOffersValue] = useState(false);
+  const [inputNewsLetterValue, setNewsLetterValue] = useState(false);
 
-  const [orderStatusesValue, setOrderStatusesValue] = useState(false)
-  const [passwordChangeValue, setPasswordChangeValue] = useState(false)
-  const [specialOffersValue, setSpecialOffersValue] = useState(false)
-  const [newsLetterValue, setNewsLetterValue] = useState(false)
+  const [isEdit, setIsEdit] = useState(false);
+  const [error, setError] = useState('');
 
-  const [isEdit, setIsEdit] = useState(false)
-  const [error, setError] = useState('')
+  function resetState() {
+    setEmail(email);
+    setFirstName(firstName);
+    setLastName(lastName);
+    setPhone(phone);
+    setOrderStatusesValue(orderStatuses);
+    setPasswordChangeValue(passwordChange);
+    setSpecialOffersValue(specialOffers);
+    setNewsLetterValue(newsLetter);
+  }
 
   useEffect(() => {
-    setFirstName(userInfo.firstName)
-    setLastName(userInfo.lastName)
-    setOrderStatusesValue(userInfo.orderStatuses)
-    setPasswordChangeValue(userInfo.passwordChange)
-    setSpecialOffersValue(userInfo.specialOffers)
-    setNewsLetterValue(userInfo.newsLetter)
-
-  }, [userInfo])
+    console.log('useEffect');
+    resetState();
+  }, [email, firstName, lastName, orderStatuses, passwordChange, specialOffers, newsLetter]);
 
   const UserInfoSchema = z.object({
-  })
-
+    email: z.string().email(),
+    firstName: z.string().min(3).max(20),
+    // lastName: z.string().max(20),
+    // phone should be a number
+    // phone: z.string().max(20),
+  });
 
   const newUserInfo = {
-    firstName: firstName,
-    lastName: lastName,
-    orderStatuses: orderStatusesValue,
-    passwordChange: passwordChangeValue,
-    specialOffers: specialOffersValue,
-    newsLetter: newsLetterValue
-  }
+    email: inputEmail,
+    firstName: inputFirstName,
+    lastName: inputLastName,
+    phone: inputPhone,
+    orderStatuses: inputOrderStatusesValue,
+    passwordChange: inputPasswordChangeValue,
+    specialOffers: inputSpecialOffersValue,
+    newsLetter: inputNewsLetterValue,
+  };
+
   function saveData() {
-    console.log('saveData', newUserInfo)
     try {
-      UserInfoSchema.parse(newUserInfo)
-      saveUserData(newUserInfo)
-
+      UserInfoSchema.parse(newUserInfo);
+      saveUserData(newUserInfo);
+      Toast.show('Successfully Saved', {
+        duration: Toast.durations.SHORT,
+        position: Toast.positions.BOTTOM,
+        shadow: true,
+        animation: true,
+        hideOnPress: true,
+        delay: 0,
+      });
     } catch (err) {
-      setError(err)
-      //console.log('err', err)
-      Alert.alert('Error', err.errors[0].message)
-      return
+      setError(err);
+      Alert.alert('Error', err.errors[0].message);
     }
+  }
 
+  async function handleLogout() {
+    try {
+      await AsyncStorage.multiRemove([
+        'email',
+        'firstName',
+        'lastName',
+        'phone',
+        'orderStatuses',
+        'passwordChange',
+        'specialOffers',
+        'newsLetter',
+        'isLoggedIn',
+      ]);
+      useStore.setState({ 
+        email: '',
+        firstName: '',
+        lastName: '',
+        phone: '',
+        orderStatuses: false,
+        passwordChange: false,
+        specialOffers: false,
+        newsLetter: false,
+        isLoggedIn: false,
+      });
+      router.dismissAll();
+    } catch (e) {
+      console.log('error: ', e);
+    }
   }
 
   return (
     <KeyboardAvoidingView
       behavior={Platform.OS === 'ios' ? 'padding' : 'height'}
       keyboardVerticalOffset={Platform.OS === 'ios' ? 0 : -190}
-      style={styles.container}>
+      style={styles.container}
+    >
       <StatusBar style="auto" />
-
-      <View>
-        {/* <Text style={styles.headerTitle}>Personal information</Text> */}
-        <View style={styles.header}>
-          <Image
-            style={{ width: 80, height: 80 }}
-            source={require('../assets/images/userImg.png')}
-          />
-          <View>
-            <Text>{username}</Text>
-            <Text>{email}</Text>
-          </View>
-          <Pressable style={styles.saveBtn}
-            onPress={() => {
-              saveData()
-            }}>
-            <Text>SAVE</Text>
-          </Pressable>
-          <Pressable style={styles.btn} onPress={() => {
-            removeUserData()
+      <View style={styles.header}>
+        <Image style={styles.profileImage} source={require('../assets/images/userImg.png')} />
+        <Pressable style={styles.coloredBtn} onPress={() => { 
+          Alert.alert('Change profile image', 'This feature is not available yet');
+          
           }}>
-            <Text>REMOVE</Text>
-          </Pressable>
-        </View>
+          <Text style={styles.coloredBtnText}>Change</Text>
+        </Pressable>
+        <Pressable style={styles.btn} onPress={()=>{
+          Alert.alert('Remove profile image', 'This feature is not available yet');
+        }}>
+          <Text style={styles.btnText}>REMOVE</Text>
+        </Pressable>
       </View>
-
-      <View style={styles.inputSetion}>
+      <View style={styles.inputSection}>
+        <TextInput
+          style={styles.textInput}
+          placeholder="Email"
+          value={inputEmail}
+          onChangeText={setEmail}
+          returnKeyType="done"
+          onSubmitEditing={Keyboard.dismiss}
+        />
         <TextInput
           style={styles.textInput}
           placeholder="First name"
-          value={firstName}
-          onChangeText={(data) => {
-            console.log('data', data)
-            setFirstName(data)
-          }} />
+          value={inputFirstName}
+          onChangeText={setFirstName}
+          returnKeyType="done"
+          onSubmitEditing={Keyboard.dismiss}
+        />
         <TextInput
           style={styles.textInput}
           placeholder="Last name"
-          value={lastName}
-          onChangeText={(data) => {
-            console.log('data', data)
-            setLastName(data)
-          }}
+          value={inputLastName}
+          onChangeText={setLastName}
+          returnKeyType="done"
+          onSubmitEditing={Keyboard.dismiss}
         />
-        {/* <TextInput
+        <TextInput
           style={styles.textInput}
           placeholder="Phone"
-          value={phone}
-          keyboardType='phone-pad'
-          onChange={(data) => { setPhone(data) }}
-        /> */}
-      </View>
-
-      <View style={styles.checkBoxSection}>
+          value={inputPhone}
+          keyboardType="phone-pad"
+          returnKeyType="done"
+          onSubmitEditing={Keyboard.dismiss}
+          onChangeText={(data) => {
+            const reg = /^[0-9\b]+$/;
+            if (data === '' || reg.test(data)) {
+              setPhone(data);
+            }
+          }}
+        />
         <View style={styles.section}>
-          <Checkbox style={styles.checkbox}
-            value={orderStatusesValue}
-            onValueChange={setOrderStatusesValue} />
-
-          <Text style={styles.paragraph}>Order statuses {orderStatusesValue && "TRUE"}</Text>
-        </View>
-        {<View style={styles.section}>
-          <Checkbox style={styles.checkbox}
-            value={passwordChangeValue}
-            onValueChange={setPasswordChangeValue} />
-          <Text style={styles.paragraph}>Password Change</Text>
-        </View>}
-        <View style={styles.section}>
-          <Checkbox style={styles.checkbox}
-            value={specialOffersValue}
-            onValueChange={setSpecialOffersValue} />
-          <Text style={styles.paragraph}>Special offers</Text>
+          <Pressable onPress={() => setOrderStatusesValue(!inputOrderStatusesValue)} style={styles.checkboxContainer}>
+            <Checkbox
+              style={styles.checkbox}
+              value={inputOrderStatusesValue}
+              color={'#495E57'}
+              onValueChange={setOrderStatusesValue}
+            />
+            <Text style={styles.label}>Order statuses</Text>
+          </Pressable>
         </View>
         <View style={styles.section}>
-          <Checkbox style={styles.checkbox}
-            value={newsLetterValue}
-            onValueChange={setNewsLetterValue} />
-          <Text style={styles.paragraph}>Newslatter</Text>
+          <Pressable onPress={() => setPasswordChangeValue(!inputPasswordChangeValue)} style={styles.checkboxContainer}>
+            <Checkbox
+              style={styles.checkbox}
+              color={'#495E57'}
+              value={inputPasswordChangeValue}
+              onValueChange={setPasswordChangeValue}
+            />
+            <Text style={styles.label}>Password Change</Text>
+          </Pressable>
+        </View>
+        <View style={styles.section}>
+          <Pressable onPress={() => setSpecialOffersValue(!inputSpecialOffersValue)} style={styles.checkboxContainer}>
+            <Checkbox
+              style={styles.checkbox}
+              color={'#495E57'}
+              value={inputSpecialOffersValue}
+              onValueChange={setSpecialOffersValue}
+            />
+            <Text style={styles.label}>Special offers</Text>
+          </Pressable>
+        </View>
+        <View style={styles.section}>
+          <Pressable onPress={() => setNewsLetterValue(!inputNewsLetterValue)} style={styles.checkboxContainer}>
+            <Checkbox
+              style={styles.checkbox}
+              color={'#495E57'}
+              value={inputNewsLetterValue}
+              onValueChange={setNewsLetterValue}
+            />
+            <Text style={styles.label}>Newsletter</Text>
+          </Pressable>
         </View>
       </View>
       <View style={styles.footer}>
-        <Pressable style={styles.logoutBtn} onPress={() => {
-          useStore.setState({ isLoggedIn: false })
-          router.dismissAll()
-        }
-        }>
-          <Text>Log out</Text>
+        <Pressable style={styles.logoutBtn} onPress={handleLogout}>
+          <Text style={styles.bold}>Log out</Text>
         </Pressable>
-
+        <View style={styles.bottomBtnSection}>
+          <Pressable style={styles.btn} onPress={resetState}>
+            <Text style={styles.btnText}>Discard changes</Text>
+          </Pressable>
+          <Pressable style={styles.coloredBtn} onPress={saveData}>
+            <Text style={styles.coloredBtnText}>Save changes</Text>
+          </Pressable>
+        </View>
       </View>
-
-
     </KeyboardAvoidingView>
   );
 }
@@ -175,25 +244,34 @@ export default function Profile() {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
+    justifyContent: 'flex-start',
+    padding: 8,
+    width: '100%',
     backgroundColor: '#fff',
-    alignItems: 'center',
-    justifyContent: 'space-between',
-    padding: 24
-  },
-  headerTitle: {
-    fontSize: 24,
-    fontWeight: 'bold'
   },
   header: {
     flexDirection: 'row',
     alignItems: 'center',
     justifyContent: 'space-between',
-    width: '100%'
+    width: '100%',
+  },
+  profileImage: {
+    width: 80,
+    height: 80,
   },
   btn: {
-    backgroundColor: '#D9D9D9',
+    alignItems: 'center',
+    justifyContent: 'center',
+    height: 40,
+    borderWidth: 1,
+    borderColor: '#495E57',
+    backgroundColor: '#FFFFFF',
     padding: 8,
-    borderRadius: 10
+    borderRadius: 8,
+    minWidth: 120,
+  },
+  btnText: {
+    fontWeight: 'bold',
   },
   logoutBtn: theme.primaryBtn,
   section: {
@@ -208,53 +286,55 @@ const styles = StyleSheet.create({
   checkbox: {
     margin: 8,
   },
-  checkBoxSection: {
-    flexDirection: 'column',
+  checkboxContainer: {
+    flexDirection: 'row',
     alignItems: 'center',
-    justifyContent: 'flex-start',
-    width: '100%',
-    backgroundColor: '#F2F2F2',
   },
-  inputSetion: {
+  label: {
+    fontSize: 15,
+  },
+  inputSection: {
     width: '100%',
-    height: 'auto',
-    padding: 0,
     marginVertical: 16,
     gap: 16,
   },
   textInput: {
-    display: 'flex',
     justifyContent: 'center',
     width: '100%',
-    backgroundColor: '#D9D9D9',
+    backgroundColor: '#FFFFFF',
     height: 40,
     borderRadius: 10,
     paddingHorizontal: 16,
-    borderColor: '#D9D9D9',
-    borderWidth: 1
+    borderColor: '#D1D2DA',
+    borderWidth: 1,
   },
   footer: {
     width: '100%',
     marginBottom: 24,
-    display: 'flex',
-    alignItems: 'center',
-    justifyContent: 'center'
-  },
-  saveBtn: {
-    backgroundColor: '#FFD817',
-
-    padding: 8,
-    borderRadius: 10
-  },
-  explanation: {
-    borderRadius: 8,
-    width: '100%',
     alignItems: 'center',
     justifyContent: 'center',
+  },
+  coloredBtn: {
+    alignItems: 'center',
+    justifyContent: 'center',
+    backgroundColor: '#495E57',
+    height: 40,
+    padding: 8,
+    borderRadius: 8,
+    minWidth: 120,
+  },
+  coloredBtnText: {
     color: '#fff',
+    fontWeight: 'bold',
+  },
+  bottomBtnSection: {
     width: '100%',
-    borderWidth: '2px',
-    border: 'solid',
-    borderColor: '#EF0E0E',
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    alignItems: 'center',
+    marginVertical: 16,
+  },
+  bold: {
+    fontWeight: 'bold',
   },
 });

@@ -1,12 +1,18 @@
 import { router, Stack } from 'expo-router'
-import React from 'react'
+import React,{useCallback} from 'react'
 import { SafeAreaProvider } from 'react-native-safe-area-context';
-import { Button, Image, Pressable } from 'react-native';
+import { BackHandler, Button, Image, Pressable, Text } from 'react-native';
 import Feather from 'react-native-vector-icons/Feather';
 import { useStore } from '../src/store';
 import { RootSiblingParent } from 'react-native-root-siblings';
+import { theme } from '../src/config';
+import { useFonts } from 'expo-font';
+import * as SplashScreen from 'expo-splash-screen';
 
 export default function Page() {
+
+
+
   const { isLoggedIn } = useStore()
   return (
     <SafeAreaProvider>
@@ -59,7 +65,38 @@ export default function Page() {
             presentation: 'card',
             animation: 'default',
             title: 'Profile',
+            headerTitleStyle: {
+              fontWeight: 'bold',
+            },
+            headerTitle: () => (
+              <Image
+                style={{ width: 132, height: 32 }}
+                source={require('../assets/images/logo.jpg')}
+              />
+            ),
             headerBackTitle: 'Back',
+            headerLeft: () => (
+              <Pressable
+                style={{ 
+                  backgroundColor: '#495E57',
+                  display: 'flex',
+                  alignItems: 'center',
+                  justifyContent: 'center',
+                  width: 40,
+                  height: 40,
+                  borderRadius: 20,
+                }}
+                onPress={() => {
+                  router.dismissAll()
+                }}>
+                  <Text
+                    style={{
+                      color: 'white',
+                      fontSize: 24,
+                    }}
+                  >←</Text>
+              </Pressable>
+            ),
           }}
         />
          <Stack.Screen
@@ -68,7 +105,12 @@ export default function Page() {
             presentation: 'modal',
             animation: 'default',
             title: 'Cart',
-            headerBackTitle: 'Back',
+            headerTitle: () => (
+              <Image
+                style={{ width: 132, height: 32 }}
+                source={require('../assets/images/logo.jpg')}
+              />
+            ),
           }}
         />
       </Stack>

@@ -1,5 +1,6 @@
 import React from "react";
-import { View, Text, FlatList, StyleSheet, Button } from "react-native";
+import { View, Text, FlatList, StyleSheet, Button, Pressable } from "react-native";
+import { theme } from "../src/config";
 
 const cartItems = [
   { id: "1", name: "Item 1", quantity: 1, price: 9.99 },
@@ -28,9 +29,11 @@ export default function Cart() {
         renderItem={renderItem}
         keyExtractor={(item) => item.id}
       />
-      <View style={styles.totalContainer}>
+      <View style={styles.footer}>
         <Text style={styles.totalText}>Total: ${calculateTotal()}</Text>
-        <Button title="Checkout" onPress={() => alert('Proceeding to checkout...')} />
+        <Pressable style={styles.primaryBtn} onPress={() => alert('Proceeding to checkout...')}>
+          <Text style={styles.fontBold}>Checkout</Text>
+        </Pressable>
       </View>
     </View>
   );
@@ -80,4 +83,14 @@ const styles = StyleSheet.create({
     fontSize: 20,
     fontWeight: "bold",
   },
+  primaryBtn: theme.primaryBtn,
+  footer: {
+    marginBottom: 16,
+    alignItems: "center",
+    justifyContent: "center",
+  },
+  fontBold: {
+    fontWeight: "bold",
+    fontSize: 16,
+  },  
 });

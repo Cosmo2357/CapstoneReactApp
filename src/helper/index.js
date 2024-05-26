@@ -51,7 +51,7 @@ export   function generateSelectedCategory(pressedCategory, selectedCategories, 
   } else if  (selectedCategories.includes(pressedCategory) && selectedCategories.length > 1) {
     return selectedCategories.filter((item) => item !== pressedCategory)
   } else if (selectedCategories.includes(pressedCategory) && selectedCategories.length === 1) {
-    return allCategories
+    return []
   } else {
     return [ ...selectedCategories, pressedCategory]
   }

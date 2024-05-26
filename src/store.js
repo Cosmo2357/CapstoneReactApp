@@ -9,21 +9,37 @@ import { generateCategory, organizeMenu, filterMenu, generateSelectedCategory } 
 export const useStore = create((set) => ({
   user: null,
   isLoggedIn: false,
-  username: '',
+  // userinfo
   email: '',
-  userInfo: {
-    firstName: '',
-    lastName: '',
-    orderStatuses: false,
-    passwordChange: false,
-    specialOffers: true,
-    newsLetter: false,
-  },
+  firstName: '',
+  lastName: '',
+  orderStatuses: false,
+  passwordChange: false,
+  specialOffers: false,
+  newsLetter: false,
+  //food
   foodMenu: [],
   foodCategory: [],
   selectedFoodMenu: [],
   selectedCategory: [],
   searchKey: '',
+
+  login: async (firstName, email) => {
+    try {
+      await AsyncStorage.setItem('firstname', firstName)
+      await AsyncStorage.setItem('email', email)
+      set({
+        firstName: firstName,
+        email: email,
+        isLoggedIn: true
+      })
+      return
+
+    } catch (e) {
+      console.log('error: ', e);
+      return
+    }
+  },
 
   setIntialState: async () => {
     set({
@@ -31,13 +47,13 @@ export const useStore = create((set) => ({
       foodMenu: foodMenu,
     })
     try {
-      const savedUsername = await AsyncStorage.getItem('username')
+      const savedFirstname = await AsyncStorage.getItem('firstname')
       const savedEmail = await AsyncStorage.getItem('email')
       const savedUserData = await AsyncStorage.getItem('userData')
       const savedLoggedIn = await AsyncStorage.getItem('isLoggedIn')
-      if (savedUsername && savedEmail && savedLoggedIn === 'true') {
+      if (savedFirstname && savedEmail && savedLoggedIn === 'true') {
         set({
-          username: savedUsername,
+          firstname: savedFirstname,
           email: savedEmail,
           isLoggedIn: true,
           userInfo: JSON.parse(savedUserData)
@@ -56,7 +72,7 @@ export const useStore = create((set) => ({
 
     set({
       foodCategory: categoryGroup,
-      selectedCategory: categoryGroup
+      //selectedCategory: categoryGroup
     })
 
     const organizedMenu = organizeMenu(menuData);
@@ -65,48 +81,34 @@ export const useStore = create((set) => ({
     //filterMenu()
   },
 
-  login: async (username, email) => {
-    console.log('login tiggered')
-    try {
-      const savedUsername = await AsyncStorage.getItem('username')
-      const savedEmail = await AsyncStorage.getItem('email')
-      console.log('savedUsername', savedUsername)
-      console.log('savedEmail', savedEmail)
 
-      if (!savedUsername || !savedEmail) {
-        console.log('no saved data, make account')
-        await AsyncStorage.setItem('username', username)
-        await AsyncStorage.setItem('email', email)
-        set({
-          username: username,
-          email: email,
-          isLoggedIn: true
-        })
-        return
-      }
-
-      if (username !== savedUsername || email !== savedEmail) {
-        Alert.alert('Error', 'Username or email is incorrect')
-        return
-      }
-    
-      // login 
-      set({
-        username: savedUsername,
-        email: savedEmail,
-        isLoggedIn: true
-      })
-
-    } catch (e) {
-      console.log('error: ', e);
-      return
-    }
-  },
 
   saveUserData: async (data) => {
     try {
-      await AsyncStorage.setItem('userData', JSON.stringify(data))
-      set({ userInfo: data })
+/*       await AsyncStorage.setItem('userData', JSON.stringify(data))
+      set({ userInfo: data }) */
+      const { email, firstName, lastName, phone, orderStatuses, passwordChange, specialOffers, newsLetter } = data;
+      await AsyncStorage.multiSet([
+        ['email', email],
+        ['firstName', firstName],
+        ['lastName', lastName],
+        ['phone', phone],
+        ['orderStatuses', orderStatuses.toString()],
+        ['passwordChange', passwordChange.toString()],
+        ['specialOffers', specialOffers.toString()],
+        ['newsLetter', newsLetter.toString()]  
+      ]);
+        set({
+          email: email,
+          firstName: firstName,
+          lastName: lastName,
+          phone: phone,
+          orderStatuses: orderStatuses,
+          passwordChange: passwordChange,
+          specialOffers: specialOffers,
+          newsLetter: newsLetter,
+        })
+
       Toast.show('Successfully Saved ', {
         duration: Toast.durations.SHORT,
         position: Toast.positions.BOTTOM,
@@ -150,12 +152,12 @@ export const useStore = create((set) => ({
   handleSelectedCategory: (category) => {
     const selectedCategories = useStore.getState().selectedCategory
     const allCategories = useStore.getState().foodCategory
-    const newSelectedCategory = generateSelectedCategory(category,selectedCategories, allCategories )
-    set({ selectedCategory: newSelectedCategory})
+    const newSelectedCategory = generateSelectedCategory(category, selectedCategories, allCategories)
+    set({ selectedCategory: newSelectedCategory })
 
- const filteredMenu = filterMenu (menuData, newSelectedCategory, useStore.getState().searchKey)
- set({ selectedFoodMenu: organizeMenu(filteredMenu) })
-},
+    const filteredMenu = filterMenu(menuData, newSelectedCategory, useStore.getState().searchKey)
+    set({ selectedFoodMenu: organizeMenu(filteredMenu) })
+  },
 
   search: () => {
     const selectedCategory = useStore.getState().selectedCategory
